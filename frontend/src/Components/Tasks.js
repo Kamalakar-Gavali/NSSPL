@@ -17,7 +17,7 @@ const Tasks = (props) => {
   const assignTask= async(id,prevUserEmail,newUserEmail)=>{
    
     
-    fetch('http://localhost:9999/tasks',{method: "PUT",
+    fetch('/tasks',{method: "PUT",
     body:JSON.stringify({id:id,prevUserEmail:prevUserEmail,newAssignedUser:newUserEmail}),
     headers: {
       "Content-type": "application/json",

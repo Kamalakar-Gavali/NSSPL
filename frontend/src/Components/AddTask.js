@@ -15,7 +15,7 @@ const AddTask = (props) => {
       taskData.createdAt = new Date();
       taskData.assignedTo = "";
       taskData.status = "Pending";
-      fetch("http://localhost:9999/addTask", {
+      fetch("/addTask", {
         method: "POST",
         body: JSON.stringify(taskData),
         headers: {

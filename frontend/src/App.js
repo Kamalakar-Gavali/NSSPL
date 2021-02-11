@@ -39,7 +39,7 @@ function App() {
         const loginDetails={};
         loginDetails.email=tempEmail;
         loginDetails.password=tempPassword;
-        fetch('http://localhost:9999/login',{
+        fetch('/login',{
           method:"POST",
           body:JSON.stringify(loginDetails),
           headers: { "Content-Type": "application/json" }
@@ -84,7 +84,7 @@ function App() {
           data.groupId=Number(role);
           
           console.log(data);
-          fetch('http://localhost:9999/signup',{
+          fetch('/signup',{
             method:"POST",
             body:JSON.stringify(data),
             headers: {
@@ -120,7 +120,7 @@ function App() {
   };
 
 useEffect(()=>{
-  fetch('http://localhost:9999/tasks',{method: "GET",
+  fetch('/tasks',{method: "GET",
   headers: {
     "Content-type": "application/json",
   }}).then(res=>res.json()).then(res=>{let data=res;console.log(data);setTaskList(data)});
@@ -129,7 +129,7 @@ useEffect(()=>{
 
 useEffect(()=>{
   
-    fetch('http://localhost:9999/users',{method: "POST",
+    fetch('/users',{method: "POST",
     body:JSON.stringify({groupId:currentUserLevel}),
     headers: {
       "Content-type": "application/json",
