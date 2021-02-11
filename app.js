@@ -1,13 +1,15 @@
 const express=require('express');
 const app=express();
 const cors=require('cors')
+app.use(cors());
 const bodyParser=require('body-parser');
+const path=require('path');
 const userModel=require('./Models/userModel');
 const TaskModel = require('./Models/TaskModel');
-
+app.use(express.static(path.join(__dirname, 'build')))
 app.use(express.urlencoded({extended: true}));
 app.use(bodyParser.json());
-app.use(cors());
+
 const nullOrUndefined=(value)=> value===null ||value==='' ||value===undefined ?true:false;
 
 app.post('/signup',async(req,res)=>{
@@ -64,7 +66,7 @@ app.post('/addTask',async(req,res)=>{
     console.log(data);
      const newTask=new TaskModel(data);
      await newTask.save();
-     res.status(201).send({"ok":true,"msg":"Task Added Successfully"})
+     res.status(201).send({"ok":true,"msg":"Task Added Successfully",newData:data})
     }
     else
     {
@@ -93,6 +95,9 @@ app.put('/tasks',async(req,res)=>{
         
         res.status(200).send({msg:`Task is taken away from ${req.body.prevUserEmail} and Assigned To ${req.body.newAssignedUser}`})
 
+})
+app.get('/*', (req, res) => {
+    res.sendFile(path.join(__dirname, 'build', 'index.html'));
 })
 
 module.exports=app;

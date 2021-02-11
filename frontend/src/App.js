@@ -24,6 +24,7 @@ function App() {
   const [taskList,setTaskList]=useState();
   const [currentUserLevel,setCurrentUserLevel]=useState('');
   const [users,setUsers]=useState([]);
+  const [update,setUpdate]=useState(0);
   const validateEmail = (value) => {
     return /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/.test(
       value
@@ -42,8 +43,17 @@ function App() {
           method:"POST",
           body:JSON.stringify(loginDetails),
           headers: { "Content-Type": "application/json" }
-        }).then((res)=>res.json()).then((res)=>{return res.ok?(setError(''),
-        setResult(''),setIsLoggedIn(true),setCurrentUser(res.currentUser),setCurrentUserLevel(res.groupId)):setError(res.msg)});//.catch(err=>setError('Some Problem is going on,Try Later'));
+        }).then((res)=>res.json()).then((res)=>{
+          if(res.ok)
+          {
+            setError('');
+            setLoginEmail('');
+            setLoginPassword('');
+            setResult('');setIsLoggedIn(true);setCurrentUser(res.currentUser);setCurrentUserLevel(res.groupId);
+          }
+          else{
+            setError(res.msg)
+          }})//.catch(err=>setError('Some Problem is going on,Try Later'));
          
       } else {
         setError("Enter Valid Email Id");
@@ -80,9 +90,21 @@ function App() {
             headers: {
               "Content-Type": "application/json",
             }
-          }).then((res)=>res.json()).then((res)=>
-          res.ok?
-          setResult(res.msg):setError(res.msg)).catch(err=>setError('Some Problem is going on,Try Later'));
+          }).then((res)=>res.json()).then((res)=>{
+          if(res.ok){
+          setResult(res.msg);setError('');
+          setEmail('');
+          setName('');
+          setPassword('');
+          setConfirmPassword('');
+          setRole('');
+        }
+        else
+        {
+          setError(res.msg);
+          setResult('');
+        }
+      }).catch(err=>setError('Some Problem is going on,Try Later'));
           setError('');
          setResult('');
         } else {
@@ -103,7 +125,7 @@ useEffect(()=>{
     "Content-type": "application/json",
   }}).then(res=>res.json()).then(res=>{let data=res;console.log(data);setTaskList(data)});
   console.log(taskList);
-},[isLoggedIn]);
+},[isLoggedIn,update]);
 
 useEffect(()=>{
   
@@ -134,7 +156,7 @@ useEffect(()=>{
                     </NavLink>
                   </li>
                   <li>
-                  <NavLink to="/logout" activeClassName="active-link" onClick={()=>setIsLoggedIn(false)} >
+                  <NavLink to="/" activeClassName="active-link" onClick={()=>setIsLoggedIn(false)} >
                       {currentUser} Logout
                     </NavLink>
                   </li>
@@ -224,11 +246,11 @@ useEffect(()=>{
               </div>
             </Route>
             <Route path='/add-task'>
-              <AddTask error={error} setError={setError} result={result} setResult={setResult} currentUser={currentUser} taskList={taskList} setTaskList={setTaskList}/>
+              <AddTask error={error} setError={setError} result={result} setResult={setResult} currentUser={currentUser} taskList={taskList} setTaskList={setTaskList} update={update} setUpdate={setUpdate}/>
             </Route>
             <Route path="/">
               {isLoggedIn?
-              <Tasks taskList={taskList} setTaskList={setTaskList} currentUserLevel={currentUserLevel} users={users} setUsers={setUsers}/> :
+              <Tasks taskList={taskList} setTaskList={setTaskList} currentUserLevel={currentUserLevel} users={users} setUsers={setUsers} update={update} setUpdate={setUpdate}/> :
               <div className="form-wrapper">
                 <h1>Login here</h1>
 

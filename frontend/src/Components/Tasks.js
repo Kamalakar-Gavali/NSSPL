@@ -13,6 +13,7 @@ const Tasks = (props) => {
   ]);
   const [selectVal,setSelectVal]=useState('');
 
+
   const assignTask= async(id,prevUserEmail,newUserEmail)=>{
    
     
@@ -20,7 +21,7 @@ const Tasks = (props) => {
     body:JSON.stringify({id:id,prevUserEmail:prevUserEmail,newAssignedUser:newUserEmail}),
     headers: {
       "Content-type": "application/json",
-    }}).then(res=>res.json()).then(res=>{console.log(res);alert(res.msg)});
+    }}).then(res=>res.json()).then(res=>{props.setUpdate(props.update+1);alert(res.msg)});
     
 
 
