@@ -11,7 +11,7 @@ import Tasks from "./Components/Tasks";
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [currentUser,setCurrentUser]=useState('');
+  const [currentUser, setCurrentUser] = useState("");
   const [result, setResult] = useState("");
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
@@ -21,10 +21,10 @@ function App() {
   const [error, setError] = useState("");
   const [loginEmail, setLoginEmail] = useState("");
   const [loginPassword, setLoginPassword] = useState("");
-  const [taskList,setTaskList]=useState();
-  const [currentUserLevel,setCurrentUserLevel]=useState('');
-  const [users,setUsers]=useState([]);
-  const [update,setUpdate]=useState(0);
+  const [taskList, setTaskList] = useState();
+  const [currentUserLevel, setCurrentUserLevel] = useState("");
+  const [users, setUsers] = useState([]);
+  const [update, setUpdate] = useState(0);
   const validateEmail = (value) => {
     return /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/.test(
       value
@@ -33,38 +33,39 @@ function App() {
   const loginHandler = () => {
     const tempEmail = loginEmail.trim();
     const tempPassword = loginPassword.trim();
-    
-    if (tempEmail!== "" && tempPassword!== "") {
+
+    if (tempEmail !== "" && tempPassword !== "") {
       if (validateEmail(tempEmail)) {
-        const loginDetails={};
-        loginDetails.email=tempEmail;
-        loginDetails.password=tempPassword;
-        fetch('/login',{
-          method:"POST",
-          body:JSON.stringify(loginDetails),
-          headers: { "Content-Type": "application/json" }
-        }).then((res)=>res.json()).then((res)=>{
-          if(res.ok)
-          {
-            setError('');
-            setLoginEmail('');
-            setLoginPassword('');
-            setResult('');setIsLoggedIn(true);setCurrentUser(res.currentUser);setCurrentUserLevel(res.groupId);
-          }
-          else{
-            setError(res.msg)
-          }})//.catch(err=>setError('Some Problem is going on,Try Later'));
-         
+        const loginDetails = {};
+        loginDetails.email = tempEmail;
+        loginDetails.password = tempPassword;
+        fetch("/login", {
+          method: "POST",
+          body: JSON.stringify(loginDetails),
+          headers: { "Content-Type": "application/json" },
+        })
+          .then((res) => res.json())
+          .then((res) => {
+            if (res.ok) {
+              setError("");
+              setLoginEmail("");
+              setLoginPassword("");
+              setResult("");
+              setIsLoggedIn(true);
+              setCurrentUser(res.currentUser);
+              setCurrentUserLevel(res.groupId);
+            } else {
+              setError(res.msg);
+            }
+          }); //.catch(err=>setError('Some Problem is going on,Try Later'));
       } else {
         setError("Enter Valid Email Id");
       }
     } else {
       setError("All Fields Are Compulsory");
     }
-    
   };
   const signupHandler = () => {
-    
     const tempEmail = email.trim();
     const tempPassword = password.trim();
     const tempConfirmPassword = confirmPassword.trim();
@@ -77,36 +78,38 @@ function App() {
     ) {
       if (validateEmail(tempEmail)) {
         if (tempPassword === tempConfirmPassword) {
-          let data={};
-          data.name=name;
-          data.email=tempEmail;
-          data.password=password;
-          data.groupId=Number(role);
-          
+          let data = {};
+          data.name = name;
+          data.email = tempEmail;
+          data.password = password;
+          data.groupId = Number(role);
+
           console.log(data);
-          fetch('/signup',{
-            method:"POST",
-            body:JSON.stringify(data),
+          fetch("/signup", {
+            method: "POST",
+            body: JSON.stringify(data),
             headers: {
               "Content-Type": "application/json",
-            }
-          }).then((res)=>res.json()).then((res)=>{
-          if(res.ok){
-          setResult(res.msg);setError('');
-          setEmail('');
-          setName('');
-          setPassword('');
-          setConfirmPassword('');
-          setRole('');
-        }
-        else
-        {
-          setError(res.msg);
-          setResult('');
-        }
-      }).catch(err=>setError('Some Problem is going on,Try Later'));
-          setError('');
-         setResult('');
+            },
+          })
+            .then((res) => res.json())
+            .then((res) => {
+              if (res.ok) {
+                setResult(res.msg);
+                setError("");
+                setEmail("");
+                setName("");
+                setPassword("");
+                setConfirmPassword("");
+                setRole("");
+              } else {
+                setError(res.msg);
+                setResult("");
+              }
+            })
+            .catch((err) => setError("Some Problem is going on,Try Later"));
+          setError("");
+          setResult("");
         } else {
           setError("Confirm Password doesn't Match");
         }
@@ -116,27 +119,39 @@ function App() {
     } else {
       setError("All Fields Are Compulsory");
     }
-    
   };
 
-useEffect(()=>{
-  fetch('/tasks',{method: "GET",
-  headers: {
-    "Content-type": "application/json",
-  }}).then(res=>res.json()).then(res=>{let data=res;console.log(data);setTaskList(data)});
-  console.log(taskList);
-},[isLoggedIn,update]);
+  useEffect(() => {
+    fetch("/tasks", {
+      method: "GET",
+      headers: {
+        "Content-type": "application/json",
+      },
+    })
+      .then((res) => res.json())
+      .then((res) => {
+        let data = res;
+        console.log(data);
+        setTaskList(data);
+      });
+    console.log(taskList);
+  }, [isLoggedIn, update]);
 
-useEffect(()=>{
-  
-    fetch('/users',{method: "POST",
-    body:JSON.stringify({groupId:currentUserLevel}),
-    headers: {
-      "Content-type": "application/json",
-    }}).then(res=>res.json()).then(res=>{let data=res;setUsers(data)});
+  useEffect(() => {
+    fetch("/users", {
+      method: "POST",
+      body: JSON.stringify({ groupId: currentUserLevel }),
+      headers: {
+        "Content-type": "application/json",
+      },
+    })
+      .then((res) => res.json())
+      .then((res) => {
+        let data = res;
+        setUsers(data);
+      });
     console.log(users);
-
-},[taskList]);
+  }, [taskList]);
   return (
     <div className="grid-container">
       <BrowserRouter>
@@ -156,7 +171,11 @@ useEffect(()=>{
                     </NavLink>
                   </li>
                   <li>
-                  <NavLink to="/" activeClassName="active-link" onClick={()=>setIsLoggedIn(false)} >
+                    <NavLink
+                      to="/"
+                      activeClassName="active-link"
+                      onClick={() => setIsLoggedIn(false)}
+                    >
                       {currentUser} Logout
                     </NavLink>
                   </li>
@@ -193,7 +212,10 @@ useEffect(()=>{
                     className="input-style"
                     placeholder="Enter Email Id"
                     onChange={(e) => setEmail(e.target.value)}
-                    onFocus={() => {setError("");setResult('')}}
+                    onFocus={() => {
+                      setError("");
+                      setResult("");
+                    }}
                   />
 
                   <input
@@ -202,13 +224,19 @@ useEffect(()=>{
                     className="input-style"
                     placeholder="Enter your name"
                     onChange={(e) => setName(e.target.value)}
-                    onFocus={() => {setError("");setResult('')}}
+                    onFocus={() => {
+                      setError("");
+                      setResult("");
+                    }}
                   />
 
                   <select
                     className="input-style"
                     onChange={(e) => setRole(e.target.value)}
-                    onFocus={() => {setError("");setResult('')}}
+                    onFocus={() => {
+                      setError("");
+                      setResult("");
+                    }}
                   >
                     <option value="">Select Your Role</option>
                     <option value="1">CEO</option>
@@ -224,7 +252,10 @@ useEffect(()=>{
                     className="input-style"
                     placeholder="Enter Password"
                     onChange={(e) => setPassword(e.target.value)}
-                    onFocus={() => {setError("");setResult('')}}
+                    onFocus={() => {
+                      setError("");
+                      setResult("");
+                    }}
                   />
                   <input
                     type="password"
@@ -232,7 +263,10 @@ useEffect(()=>{
                     className="input-style"
                     placeholder="Confirm Password"
                     onChange={(e) => setConfirmPassword(e.target.value)}
-                    onFocus={() => {setError("");setResult('')}}
+                    onFocus={() => {
+                      setError("");
+                      setResult("");
+                    }}
                   />
 
                   <button
@@ -245,47 +279,70 @@ useEffect(()=>{
                 </div>
               </div>
             </Route>
-            <Route path='/add-task'>
-              <AddTask error={error} setError={setError} result={result} setResult={setResult} currentUser={currentUser} taskList={taskList} setTaskList={setTaskList} update={update} setUpdate={setUpdate}/>
+            <Route path="/add-task">
+              <AddTask
+                error={error}
+                setError={setError}
+                result={result}
+                setResult={setResult}
+                currentUser={currentUser}
+                taskList={taskList}
+                setTaskList={setTaskList}
+                update={update}
+                setUpdate={setUpdate}
+              />
             </Route>
             <Route path="/">
-              {isLoggedIn?
-              <Tasks taskList={taskList} setTaskList={setTaskList} currentUserLevel={currentUserLevel} users={users} setUsers={setUsers} update={update} setUpdate={setUpdate}/> :
-              <div className="form-wrapper">
-                <h1>Login here</h1>
+              {isLoggedIn ? (
+                <Tasks
+                  taskList={taskList}
+                  setTaskList={setTaskList}
+                  currentUserLevel={currentUserLevel}
+                  users={users}
+                  setUsers={setUsers}
+                  update={update}
+                  setUpdate={setUpdate}
+                />
+              ) : (
+                <div className="form-wrapper">
+                  <h1>Login here</h1>
 
-                <div className="form-content">
-                  <label className="error">{error}</label>
-                  <label className="result">{result}</label>
-                  <input
-                    type="email"
-                    className="input-style"
-                    value={loginEmail}
-                    onChange={(e) => setLoginEmail(e.target.value)}
-                    placeholder="Enter Your Email ID"
-                    onFocus={() => {setError("");setResult('')}}
-                  />
-                  <input
-                    type="password"
-                    className="input-style"
-                    value={loginPassword}
-                    onChange={(e) => setLoginPassword(e.target.value)}
-                    placeholder="Enter Password"
-                    onFocus={() => {setError("");setResult('')}}
-
-                  />
-                  <button
-                    type="button"
-                    className="input-style btn"
-                    onClick={loginHandler}
-                  >
-                    Login
-                  </button>
+                  <div className="form-content">
+                    <label className="error">{error}</label>
+                    <label className="result">{result}</label>
+                    <input
+                      type="email"
+                      className="input-style"
+                      value={loginEmail}
+                      onChange={(e) => setLoginEmail(e.target.value)}
+                      placeholder="Enter Your Email ID"
+                      onFocus={() => {
+                        setError("");
+                        setResult("");
+                      }}
+                    />
+                    <input
+                      type="password"
+                      className="input-style"
+                      value={loginPassword}
+                      onChange={(e) => setLoginPassword(e.target.value)}
+                      placeholder="Enter Password"
+                      onFocus={() => {
+                        setError("");
+                        setResult("");
+                      }}
+                    />
+                    <button
+                      type="button"
+                      className="input-style btn"
+                      onClick={loginHandler}
+                    >
+                      Login
+                    </button>
+                  </div>
                 </div>
-              </div>
-             }
+              )}
             </Route>
-            
           </Switch>
         </main>
         <footer>

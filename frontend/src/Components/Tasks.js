@@ -9,29 +9,33 @@ const Tasks = (props) => {
     {
       name: "kg",
       email: "kg@gmail.com",
-    }
+    },
   ]);
-  const [selectVal,setSelectVal]=useState('');
+  const [selectVal, setSelectVal] = useState("");
 
+  const assignTask = async (id, prevUserEmail, newUserEmail) => {
+    fetch("/tasks", {
+      method: "PUT",
+      body: JSON.stringify({
+        id: id,
+        prevUserEmail: prevUserEmail,
+        newAssignedUser: newUserEmail,
+      }),
+      headers: {
+        "Content-type": "application/json",
+      },
+    })
+      .then((res) => res.json())
+      .then((res) => {
+        props.setUpdate(props.update + 1);
+        alert(res.msg);
+      });
+  };
 
-  const assignTask= async(id,prevUserEmail,newUserEmail)=>{
-   
-    
-    fetch('/tasks',{method: "PUT",
-    body:JSON.stringify({id:id,prevUserEmail:prevUserEmail,newAssignedUser:newUserEmail}),
-    headers: {
-      "Content-type": "application/json",
-    }}).then(res=>res.json()).then(res=>{props.setUpdate(props.update+1);alert(res.msg)});
-    
-
-
-
-  }
-  
   return (
     <>
       {console.log(props.users)}
-      {console.log("users"+us[0].email)}
+      {console.log("users" + us[0].email)}
       <table className="table-style">
         <thead>
           <tr>
@@ -47,26 +51,24 @@ const Tasks = (props) => {
         <tbody>
           {props.taskList.map((task, index) => (
             <tr key={index}>
-                
               <td>{task._id}</td>
               <td>{task.taskTitle}</td>
               <td>{task.taskDesc}</td>
               <td>{task.createdBy}</td>
               <td>{task.createdAt}</td>
               <td>
-                <select 
+                <select
                   className="input-style"
                   value={task.assignedTo}
-                  onChange={(e)=>assignTask(task._id,task.assignedTo,e.target.value)}
+                  onChange={(e) =>
+                    assignTask(task._id, task.assignedTo, e.target.value)
+                  }
                 >
-                    
-                    <>
+                  <>
                     <option value={task.assignedTo}>{task.assignedTo}</option>
-                  {props.users.map((user, index) => 
-                  
-                    <option value={user.email}>{user.email}</option>
-                    
-                  )}
+                    {props.users.map((user, index) => (
+                      <option value={user.email}>{user.email}</option>
+                    ))}
                   </>
                 </select>
               </td>

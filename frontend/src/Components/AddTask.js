@@ -6,7 +6,7 @@ const AddTask = (props) => {
   const addTask = () => {
     const tempTitle = title.trim();
     const tempDesc = desc.trim();
-    let data=[];
+    let data = [];
     if (tempTitle !== "" && tempDesc !== "") {
       const taskData = {};
       taskData.taskTitle = tempTitle;
@@ -23,21 +23,19 @@ const AddTask = (props) => {
         },
       })
         .then((res) => res.json())
-        .then((res) =>{
-          if(res.ok)
-          {
-            
-            setTitle('');
-            setDesc('');
-            props.setUpdate(props.update+1);
-            props.setResult(res.msg);props.setError('');
+        .then((res) => {
+          if (res.ok) {
+            setTitle("");
+            setDesc("");
+            props.setUpdate(props.update + 1);
+            props.setResult(res.msg);
+            props.setError("");
+          } else {
+            props.setResult("");
+            props.setError(res.msg);
           }
-          else{
-            props.setResult("");props.setError(res.msg)
-          }
-        }
-        )
-        //.catch((e) => props.setError("Something went Wrong ,Try Again Later"));
+        });
+      //.catch((e) => props.setError("Something went Wrong ,Try Again Later"));
     } else {
       props.setError("All fields Are Compulsory");
     }
